@@ -17,7 +17,7 @@ if(strlen($wherecategory)>5){
 	$wherecategory_tables="";
 }
 
-$query="SELECT count(alert.id) as res_cnt, alert.rule_id as res_id
+$query="SELECT count(alert.id) as res_cnt, alert.rule_id
 	FROM alert ".$wherecategory_tables."
 	WHERE alert.timestamp>'".(time()-($inputhours*60*60))."' 
 	AND alert.level>=".$inputlevel."
@@ -52,7 +52,7 @@ if(!$result=mysql_query($query, $db_ossec)){
 	
 	while($row = @mysql_fetch_assoc($result)){
 		$mainstring.="<div class='fleft top10data' style='width:60px'>".number_format($row['res_cnt'])."</div>
-				<div class='fleft top10data'><a class='top10data tooltip_small' href='./detail.php?rule_id=".$row['res_rule']."&from=".$from."&breakdown=source'>".htmlspecialchars(substr($row['res_desc'], 0, 28))."...<span>".htmlspecialchars($row['res_desc'])."</span></a></div>";
+				<div class='fleft top10data'><a class='top10data tooltip_small' href='./detail.php?rule_id=".$row['rule_id']."&from=".$from."&breakdown=source'>".htmlspecialchars(substr($row['rule_id'], 0, 28))."...<span>".htmlspecialchars($row['rule_id'])."</span></a></div>";
 	
 		$mainstring.="			<div class='clr'></div>";
 	}
