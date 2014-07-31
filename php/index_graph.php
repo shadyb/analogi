@@ -261,7 +261,7 @@ if($glb_debug==1){
 		$databaseschema.="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fix - Import the MySQL schema that comes with OSSEC";
 	}
 
-	if(checktable('alert') && checktable('data') && checktable('location') && checktable('signature')){
+	if(checktable('alert') && checktable('location') && checktable('signature')){
 		$anydata="yes";
 	}else{
 		$problem=1;
