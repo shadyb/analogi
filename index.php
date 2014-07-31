@@ -13,7 +13,7 @@ if(isset($_GET['level']) && preg_match("/^[0-9]+$/", $_GET['level'])){
 }else{
 	$inputlevel=$glb_level;
 }
-$query="SELECT distinct(level) FROM signature ORDER BY level";
+$query="SELECT distinct(level) FROM alert ORDER BY level";
 $result=mysql_query($query, $db_ossec);
 $filterlevel="";
 while($row = @mysql_fetch_assoc($result)){

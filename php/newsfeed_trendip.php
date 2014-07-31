@@ -64,10 +64,8 @@ $query="select
 	count(alert.id) as res_cnt,
 	category.cat_name as res_name,
 	category.cat_id as res_id
-	from alert, signature_category_mapping, category
+	from alert, category
 	where alert.timestamp>".(time()-($glb_threatdays*24*3600))."
-	and alert.rule_id=signature_category_mapping.rule_id
-	and signature_category_mapping.cat_id=category.cat_id
 	and alert.src_ip in 
 		(
 			".$whereinorderby."

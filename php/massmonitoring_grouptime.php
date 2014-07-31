@@ -15,10 +15,8 @@ $query="select
 		count(alert.id) as res_cnt,
 		concat(substring(alert.timestamp, 1, 5), '00000') as res_time,
 		category.cat_name as res_name
-	from alert, signature_category_mapping, category
+	from alert, category
 	where alert.timestamp>".(substr(time()-($glb_mass_days * 24 * 3600),0,5)."00000")."
-	and alert.rule_id=signature_category_mapping.rule_id
-	and signature_category_mapping.cat_id=category.cat_id
 	".$where_ignore."
 	group by res_time, res_name;";
 

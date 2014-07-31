@@ -8,13 +8,11 @@ $query="SELECT 	count(alert.rule_id) as count,
 		max(alert.timestamp) as timestamp, 
 		substring_index(substring_index(location.name, ' ', 1), '->', 1) as source, 
 		alert.rule_id as rule_id,
-		signature.level,
-		signature.description,
+		alert.level,
 		alert.full_log as data
-	FROM alert, location, signature
+	FROM alert, location
 	WHERE alert.timestamp>".(time()-($glb_threatdays*3600*24))."
-	AND signature.level>".$glb_threatlevel."
-	AND alert.rule_id = signature.rule_id
+	AND alert.level>".$glb_threatlevel."
 	AND alert.location_id = location.id
 	GROUP BY source, rule_id
 	ORDER BY level DESC, timestamp

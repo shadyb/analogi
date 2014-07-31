@@ -7,9 +7,8 @@
 # Generates the graph line for the data over time graph on management.php
 
 $query="SELECT count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(location.name, ' ', 1), '->', 1) as res_name, location.id as res_id
-        FROM alert, location, signature
+        FROM alert, location
         WHERE alert.location_id = location.id
-        AND alert.rule_id = signature.rule_id
         GROUP BY res_name
         ORDER BY res_cnt DESC
         LIMIT 10;";

@@ -31,12 +31,9 @@ $halfperiod=intval("1".$zeros)/2;
 
 # To filter on 'Category' (SSHD) extra table needs adding, but they slow down the query for other things, so lets only put them into the SQL if needed....
 if(strlen($wherecategory)>1){
-        $wherecategory_tables=", signature_category_mapping, category";
-        $wherecategory_and="and alert.rule_id=signature_category_mapping.rule_id
-        and signature_category_mapping.cat_id=category.cat_id";
+        $wherecategory_tables=", category";
 }else{
         $wherecategory_tables="";
-        $wherecategory_and="";
 }
 
 # The graph data 'series' can be broken down in several ways
@@ -46,11 +43,9 @@ if((isset($_GET['field']) && $_GET['field']=='path') || (!isset($_GET['field']) 
 	$graphheightmultiplier=5;
 	$keyprepend="";
 	$querychart="select (concat(substring(alert.timestamp, 1, $substrsize), '$zeros')+".$halfperiod.") as res_time, count(alert.id) as res_cnt, SUBSTRING_INDEX(location.name, '->', -1) as res_field
-		from alert, location, signature ".$wherecategory_tables."
-		where signature.level>=$inputlevel
+		from alert, location ".$wherecategory_tables."
+		where alert.level>=$inputlevel
 		and alert.location_id=location.id
-		and alert.rule_id=signature.rule_id
-		".$wherecategory_and."
 		and alert.timestamp>".(time()-($inputhours*3600))."
 		".$wherecategory." 
 		".$glb_notrepresentedwhitelist_sql."
@@ -60,27 +55,23 @@ if((isset($_GET['field']) && $_GET['field']=='path') || (!isset($_GET['field']) 
 }elseif((isset($_GET['field']) && $_GET['field']=='level') || (!isset($_GET['field']) && $glb_graphbreakdown=="level") ){
 	$graphheightmultiplier=2;
 	$keyprepend="Lvl: ";
-	$querychart="select (concat(substring(alert.timestamp, 1, $substrsize), '$zeros')+".$halfperiod.") as res_time, count(alert.id) as res_cnt, signature.level as res_field
-		from alert, location, signature ".$wherecategory_tables."
-		where signature.level>=$inputlevel
+	$querychart="select (concat(substring(alert.timestamp, 1, $substrsize), '$zeros')+".$halfperiod.") as res_time, count(alert.id) as res_cnt, alert.level as res_field
+		from alert, location ".$wherecategory_tables."
+		where alert.level>=$inputlevel
 		and alert.location_id=location.id
-		and alert.rule_id=signature.rule_id
-		".$wherecategory_and."
 		and alert.timestamp>".(time()-($inputhours*3600))."
 		".$wherecategory." 
 		".$glb_notrepresentedwhitelist_sql."
-		group by substring(alert.timestamp, 1, $substrsize), signature.level
-		order by substring(alert.timestamp, 1, $substrsize), signature.level";
+		group by substring(alert.timestamp, 1, $substrsize), alert.level
+		order by substring(alert.timestamp, 1, $substrsize), alert.level";
 
 }elseif((isset($_GET['field']) && $_GET['field']=='rule_id') || (!isset($_GET['field']) && $glb_graphbreakdown=="rule_id")){
 	$graphheightmultiplier=8;
 	$keyprepend="";
-	$querychart="select (concat(substring(alert.timestamp, 1, $substrsize), '$zeros')+".$halfperiod.") as res_time, count(alert.id) as res_cnt, CONCAT(alert.rule_id, ' ', signature.description) as res_field
-		from alert, location, signature ".$wherecategory_tables."
-		where signature.level>=$inputlevel
+	$querychart="select (concat(substring(alert.timestamp, 1, $substrsize), '$zeros')+".$halfperiod.") as res_time, count(alert.id) as res_cnt, alert.rule_id as res_field
+		from alert, location ".$wherecategory_tables."
+		where alert.level>=$inputlevel
 		and alert.location_id=location.id
-		and alert.rule_id=signature.rule_id
-		".$wherecategory_and."
 		and alert.timestamp>".(time()-($inputhours*3600))."
 		".$wherecategory." 
 		".$glb_notrepresentedwhitelist_sql."
@@ -93,11 +84,9 @@ if((isset($_GET['field']) && $_GET['field']=='path') || (!isset($_GET['field']) 
 	$graphheightmultiplier=1;
 	$keyprepend="";
 	$querychart="select (concat(substring(alert.timestamp, 1, $substrsize), '$zeros')+".$halfperiod.") as res_time, count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(location.name, ' ', 1), '->', 1) as res_field
-		from alert, location, signature ".$wherecategory_tables."
-		where signature.level>=$inputlevel
+		from alert, location ".$wherecategory_tables."
+		where alert.level>=$inputlevel
 		and alert.location_id=location.id
-		and alert.rule_id=signature.rule_id
-		".$wherecategory_and."
 		and alert.timestamp>".(time()-($inputhours*3600))."
 		".$wherecategory." 
 		".$glb_notrepresentedwhitelist_sql."
@@ -252,8 +241,6 @@ if($glb_debug==1){
 	&& mysql_query("SELECT 1 from category", $db_ossec)
 	&& mysql_query("SELECT 1 from location", $db_ossec)
 	&& mysql_query("SELECT 1 from server", $db_ossec)
-	&& mysql_query("SELECT 1 from signature", $db_ossec)
-	&& mysql_query("SELECT 1 from signature_category_mapping", $db_ossec)){
 		$databaseschema="yes";
 	}else{
 		$problem=1;
@@ -261,7 +248,7 @@ if($glb_debug==1){
 		$databaseschema.="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fix - Import the MySQL schema that comes with OSSEC";
 	}
 
-	if(checktable('alert') && checktable('location') && checktable('signature')){
+	if(checktable('alert') && checktable('location')){
 		$anydata="yes";
 	}else{
 		$problem=1;

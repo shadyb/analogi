@@ -41,25 +41,23 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 	# breakdown by level
 
 	$keyprepend="Level ";
-	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, signature.level as res_value
-		FROM alert, location, signature ".$wherecategory_tables."
+	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, alert.level as res_value
+		FROM alert, location ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
-		AND alert.rule_id=signature.rule_id
 		".$where."
 		".$wherecategory_and."
-		GROUP BY substring(alert.timestamp, 1, $substrsize), signature.level
-		ORDER BY substring(alert.timestamp, 1, $substrsize), signature.level";
+		GROUP BY substring(alert.timestamp, 1, $substrsize), alert.level
+		ORDER BY substring(alert.timestamp, 1, $substrsize), alert.level";
 
 }elseif((isset($_GET['breakdown']) && $_GET['breakdown']=='rule_id') || (isset($_GET['source']) && strlen($_GET['source'])>0)){
 	# breakdown is set to source OR a source has been chosen
 
 	$keyprepend="Rule ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, alert.rule_id as res_value
-		FROM alert, location, signature ".$wherecategory_tables."
+		FROM alert, location ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
-		AND alert.rule_id=signature.rule_id
 		".$where."
 		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), alert.rule_id
@@ -67,10 +65,9 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 }else{
 	# Default - i.e. if not chosen, or if set to 'source'
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, SUBSTRING_INDEX(location.name, ' ', 1) as res_value
-		FROM alert, location, signature ".$wherecategory_tables."
+		FROM alert, location ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
-		AND alert.rule_id=signature.rule_id
 		".$where."
 		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, ' ', 1)

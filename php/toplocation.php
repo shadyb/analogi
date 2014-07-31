@@ -12,21 +12,16 @@ if($glb_debug==1){
 
 # To filter on 'Category' (SSHD) extra table needs adding, but they slow down the query for other things, so lets only put them into the SQL if needed....
 if(strlen($wherecategory)>1){
-        $wherecategory_tables=", signature_category_mapping, category";
-        $wherecategory_and="and alert.rule_id=signature_category_mapping.rule_id
-        and signature_category_mapping.cat_id=category.cat_id";
+        $wherecategory_tables=", category";
 }else{
         $wherecategory_tables="";
-        $wherecategory_and="";
 }
 
 
 $query="SELECT count(alert.id) as res_cnt, SUBSTRING_INDEX(SUBSTRING_INDEX(location.name, ' ', 1), '->', 1) as res_name
-	FROM alert, location, signature ".$wherecategory_tables."
+	FROM alert, location ".$wherecategory_tables."
 	WHERE alert.location_id = location.id
-	AND alert.rule_id = signature.rule_id
-	".$wherecategory_and."
-	AND signature.level>='".$inputlevel."'
+	AND alert.level>='".$inputlevel."'
 	AND alert.timestamp>'".(time()-($inputhours*60*60))."'
 	".$wherecategory."
 	".$glb_notrepresentedwhitelist_sql."

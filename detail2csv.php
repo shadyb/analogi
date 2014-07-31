@@ -17,14 +17,14 @@ $where="";
 ## filter criteria 'levelmin' and 'levelmax' 
 if(isset($_GET['levelmin']) && preg_match("/^[0-9]+$/", $_GET['levelmin'])){
 	$inputlevelmin=$_GET['levelmin'];
-	$where.="AND signature.level>=".$inputlevelmin." ";
+	$where.="AND alert.level>=".$inputlevelmin." ";
 }else{
 	$inputlevelmin="";
 	$where.="";
 }
 if(isset($_GET['levelmax']) && preg_match("/^[0-9]+$/", $_GET['levelmax'])){
 	$inputlevelmax=$_GET['levelmax'];
-	$where.="AND signature.level<=".$inputlevelmax." ";
+	$where.="AND alert.level<=".$inputlevelmax." ";
 }else{
 	$inputlevelmax="";
 	$where.="";
@@ -95,9 +95,6 @@ if(isset($_GET['rule_id']) && preg_match("/^[0-9,\ ]+$/", $_GET['rule_id'])){
 			$where.="OR alert.rule_id=".$value." ";
 		}
 
-		$query="select signature.description from signature where rule_id=".$value;
-		$result=mysql_query($query, $db_ossec);
-		$row = @mysql_fetch_assoc($result);
 		$noterule_id.="<span style='font-weight:bold;' >Rule ".$value."</span>: ".$row['description']."<br/>";
 	}
 	$where.=")";
@@ -149,11 +146,9 @@ if(isset($_GET['ipmatch']) && preg_match("/^[0-9\.]*$/", $_GET['ipmatch'])){
 if(isset($_GET['rulematch']) && strlen($_GET['rulematch'])>0){
 	$inputrulematch=$_GET['rulematch'];
 	$filterrulematch=$inputrulematch;
-	$where.="AND signature.description like '%".quote_smart($inputrulematch)."%' ";
 }else{
 	$inputrulematch="";
 	$filterrulematch=$inputrulematch;
-
 }
 
 ### filter limit
@@ -173,12 +168,10 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 
 
 
-	$querytable="SELECT alert.id as id, alert.rule_id as rule, signature.level as lvl, alert.timestamp as timestamp, location.name as loc, alert.full_log as data, alert.src_ip as src_ip
-		FROM alert, location, signature
+	$querytable="SELECT alert.id as id, alert.rule_id as rule, alert.level as lvl, alert.timestamp as timestamp, location.name as loc, alert.full_log as data, alert.src_ip as src_ip
+		FROM alert, location
 		WHERE 1=1
 		and alert.location_id=location.id
-		and alert.rule_id=signature.rule_id
-		".$where."
 		ORDER BY alert.timestamp DESC";
 	$resulttable=mysql_query($querytable, $db_ossec);
 

@@ -19,12 +19,9 @@ echo "<div class='top10header'>
 	Rare in <span class='tw'>".$inputhours."</span> Hrs, last seen (Lvl <span class='tw'>".$inputlevel."</span>+)</div>";
 
 $query="select distinct(alert.rule_id)
-	from alert, signature, signature_category_mapping, category
+	from alert, category
 	where alert.timestamp>".(time()-($inputhours*3600))."
-	and alert.rule_id=signature.rule_id
-	and alert.rule_id=signature_category_mapping.rule_id
-	and signature_category_mapping.cat_id=category.cat_id
-	and signature.level>".$inputlevel."
+	and alert.level>".$inputlevel."
 	".$wherecategory."";
 
 
@@ -38,10 +35,9 @@ while($row = @mysql_fetch_assoc($result)){
 
 	$ruleid=$row['rule_id'];
 
-	$querylast="select max(alert.timestamp) as time, signature.description as descr
-		from alert, signature
+	$querylast="select max(alert.timestamp) as time
+		from alert
 		where alert.rule_id=".$ruleid."
-		and alert.rule_id=signature.rule_id
 		and alert.timestamp<".(time()-($inputhours*3600));
 	$resultlast=mysql_query($querylast, $db_ossec);
 	$rowlast = @mysql_fetch_assoc($resultlast);

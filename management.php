@@ -18,7 +18,7 @@ if(isset($_GET['action']) && $_GET['action']=='delete' && preg_match("/\/managem
 	
 	# deletelevel
 	if(isset($_GET['level']) && is_numeric($_GET['level']) && $_GET['level']>0){
-		$where.="signature.level=".$_GET['level']." AND ";
+		$where.="alert.level=".$_GET['level']." AND ";
 	}
 	
 	# deletebefore
@@ -46,7 +46,6 @@ if(isset($_GET['action']) && $_GET['action']=='delete' && preg_match("/\/managem
 		$where=substr($where,0,-4);
 
 		$querydelete="DELETE alert FROM alert
-			LEFT JOIN signature ON alert.rule_id=signature.rule_id
 			LEFT JOIN location ON alert.location_id=location.id
 			WHERE ".$where;
 		$resultdelete=mysql_query($querydelete, $db_ossec);
@@ -71,7 +70,6 @@ if(isset($_GET['action']) && $_GET['action']=='removelocation' && isset($_GET['s
 
 	# Delete data
 	$querydelete="DELETE alert FROM alert
-		LEFT JOIN signature ON alert.rule_id=signature.rule_id
 		LEFT JOIN location ON alert.location_id=location.id
 		WHERE location.name like \"".$_GET['source']."%\"";
 	$resultdelete=mysql_query($querydelete, $db_ossec);
@@ -130,7 +128,7 @@ while($row = @mysql_fetch_assoc($result)){
 }
 
 # Get all levels for dropdowns
-$query="SELECT distinct(level) FROM signature ORDER BY level";
+$query="SELECT distinct(level) FROM alert ORDER BY level";
 $result=mysql_query($query, $db_ossec);
 $filterlevel="";
 while($row = @mysql_fetch_assoc($result)){

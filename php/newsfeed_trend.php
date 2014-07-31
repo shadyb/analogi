@@ -34,11 +34,10 @@ $query="SELECT
 		COUNT(alert.id) as res_cnt, 
 		SUBSTRING_INDEX(SUBSTRING_INDEX(location.name, ' ', 1), '->', 1) as res_loc,
 		CONCAT(alert.rule_id) as res_field
-	FROM alert, location, signature
+	FROM alert, location
 	WHERE alert.timestamp<".$lastfullblock."
 	AND alert.location_id=location.id
-	AND signature.level>=".$glb_trendlevel."
-	AND alert.rule_id=signature.rule_id
+	AND alert.level>=".$glb_trendlevel."
 	AND ".$where."
 	GROUP BY res_loc, res_field, res_time
 	ORDER BY res_loc, res_field, res_time, res_cnt;";
@@ -117,9 +116,9 @@ if($glb_debug==1){
 	foreach($finaltrendinfo as $one=>$two){
 		$details=preg_split("/\|\|/", $one);
 	
-		$query="SELECT description as descr, level as lvl
-			FROM signature
-			WHERE signature.rule_id=".$details[1];
+		$query="SELECT level as lvl
+			FROM alert
+			WHERE alert.rule_id=".$details[1];
 		$result=mysql_query($query, $db_ossec);
 		$row = @mysql_fetch_assoc($result);
 	
