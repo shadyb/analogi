@@ -23,7 +23,7 @@ $query="SELECT count(alert.id) as res_cnt, alert.rule_id
 	AND alert.level>=".$inputlevel."
 	".$glb_notrepresentedwhitelist_sql." 
 	".$wherecategory." 
-	GROUP BY res_id
+	GROUP BY alert.rule_id
 	ORDER BY count(alert.id) DESC
 	LIMIT ".$glb_indexsubtablelimit; 
 
