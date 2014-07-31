@@ -240,7 +240,7 @@ if($glb_debug==1){
 	&& mysql_query("SELECT 1 from alert", $db_ossec)
 	&& mysql_query("SELECT 1 from category", $db_ossec)
 	&& mysql_query("SELECT 1 from location", $db_ossec)
-	&& mysql_query("SELECT 1 from server", $db_ossec)
+	&& mysql_query("SELECT 1 from server", $db_ossec){
 		$databaseschema="yes";
 	}else{
 		$problem=1;
