@@ -42,11 +42,10 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 
 	$keyprepend="Level ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, signature.level as res_value
-		FROM alert, location, signature, data ".$wherecategory_tables."
+		FROM alert, location, signature ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
 		AND alert.rule_id=signature.rule_id
-		AND alert.id=data.id
 		".$where."
 		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), signature.level
@@ -57,11 +56,10 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 
 	$keyprepend="Rule ";
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, alert.rule_id as res_value
-		FROM alert, location, signature, data ".$wherecategory_tables."
+		FROM alert, location, signature ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
 		AND alert.rule_id=signature.rule_id
-		AND alert.id=data.id
 		".$where."
 		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), alert.rule_id
@@ -69,11 +67,10 @@ if(isset($_GET['breakdown']) && $_GET['breakdown']=='level'){
 }else{
 	# Default - i.e. if not chosen, or if set to 'source'
 	$querychart="SELECT concat(substring(alert.timestamp, 1, $substrsize), '$zeros') as res_time, count(alert.id) as res_cnt, SUBSTRING_INDEX(location.name, ' ', 1) as res_value
-		FROM alert, location, signature, data ".$wherecategory_tables."
+		FROM alert, location, signature ".$wherecategory_tables."
 		WHERE 1=1
 		AND alert.location_id=location.id
 		AND alert.rule_id=signature.rule_id
-		AND alert.id=data.id
 		".$where."
 		".$wherecategory_and."
 		GROUP BY substring(alert.timestamp, 1, $substrsize), SUBSTRING_INDEX(location.name, ' ', 1)

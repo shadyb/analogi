@@ -250,7 +250,6 @@ if($glb_debug==1){
 	if(mysql_query("SELECT 1 from agent", $db_ossec)
 	&& mysql_query("SELECT 1 from alert", $db_ossec)
 	&& mysql_query("SELECT 1 from category", $db_ossec)
-	&& mysql_query("SELECT 1 from data", $db_ossec)
 	&& mysql_query("SELECT 1 from location", $db_ossec)
 	&& mysql_query("SELECT 1 from server", $db_ossec)
 	&& mysql_query("SELECT 1 from signature", $db_ossec)

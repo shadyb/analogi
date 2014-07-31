@@ -22,7 +22,7 @@ if($result=mysql_query($query, $db_ossec)){
 
 
 $query="SELECT count(id) as res_count
-	FROM data";
+	FROM alert";
 if($result=mysql_query($query, $db_ossec)){
 	$row = @mysql_fetch_assoc($result);
 	if(!$row['res_count']>0){

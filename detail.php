@@ -162,7 +162,7 @@ if(isset($_GET['datamatch']) && strlen($_GET['datamatch'])>0){
 if(isset($_GET['dataexclude']) && strlen($_GET['dataexclude'])>0){
 	$inputdataexclude=$_GET['dataexclude'];
 	$filterdataexclude=$inputdataexclude;
-	$where.="AND data.full_log not like '%".quote_smart($inputdataexclude)."%' ";
+	$where.="AND alert.full_log not like '%".quote_smart($inputdataexclude)."%' ";
 }else{
 	$inputdataexclude="";
 	$filterdataexclude=$inputdataexclude;
@@ -488,24 +488,22 @@ include "page_refresh.php";
 
 	# Count the queries for the last line of the table.
 	$querycounttable="SELECT count(alert.id) as res_cnt
-		FROM alert, location, signature, data ".$wherecategory_tables."
+		FROM alert, location, signature ".$wherecategory_tables."
 		WHERE 1=1
 		".$wherecategory_and."
 		and alert.location_id=location.id
 		and alert.rule_id=signature.rule_id
-		and alert.id=data.id
 		".$where;
 	$resultcounttable=mysql_query($querycounttable, $db_ossec);
 	$rowcounttable = @mysql_fetch_assoc($resultcounttable);
 	$resultablerows=$rowcounttable['res_cnt'];
 	
 	# Fetch the actual rows of data for the table
-	$querytable="SELECT alert.id as id, alert.rule_id as rule, signature.level as lvl, alert.timestamp as timestamp, location.name as loc, data.full_log as data, alert.src_ip as src_ip
-		FROM alert, location, signature, data ".$wherecategory_tables."
+	$querytable="SELECT alert.id as id, alert.rule_id as rule, signature.level as lvl, alert.timestamp as timestamp, location.name as loc, alert.full_log as data, alert.src_ip as src_ip
+		FROM alert, location, signature ".$wherecategory_tables."
 		WHERE 1=1
 		and alert.location_id=location.id
 		and alert.rule_id=signature.rule_id
-		and alert.id=data.id
 		".$where."
 		".$wherecategory_and."
 		ORDER BY alert.timestamp DESC

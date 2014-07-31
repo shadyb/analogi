@@ -4,11 +4,10 @@
  * This program is free software; Distributed under the terms of the GNU GPL v3.
  */
 	
-	$query="SELECT alert.timestamp, alert.id, substring_index(substring_index(name, ' ', 1), '->', 1) as source, substring_index(name,'->',-1) as path, alert.rule_id, signature.level, signature.description, (alert.timestamp + (".$glb_threatbooster."*86400*signature.level)) as t1, data.full_log as data
+	$query="SELECT alert.timestamp, alert.id, substring_index(substring_index(name, ' ', 1), '->', 1) as source, substring_index(name,'->',-1) as path, alert.rule_id, signature.level, signature.description, (alert.timestamp + (".$glb_threatbooster."*86400*signature.level)) as t1, alert.full_log as data
 		FROM alert
 		LEFT JOIN location ON location.id = alert.location_id 
 		LEFT JOIN signature ON signature.rule_id = alert.rule_id 
-		LEFT JOIN data ON alert.id=data.id
 		WHERE signature.level>4
 		AND alert.timestamp>".(time()-(86400*$glb_threatdays))." 
 		ORDER BY t1 DESC 

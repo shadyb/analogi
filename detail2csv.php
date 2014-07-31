@@ -116,7 +116,7 @@ if(isset($_GET['rule_id']) && preg_match("/^[0-9,\ ]+$/", $_GET['rule_id'])){
 if(isset($_GET['datamatch']) && strlen($_GET['datamatch'])>0){
 	$inputdatamatch=$_GET['datamatch'];
 	$filterdatamatch=$inputdatamatch;
-	$where.="AND data.full_log like '%".quote_smart($inputdatamatch)."%' ";
+	$where.="AND alert.full_log like '%".quote_smart($inputdatamatch)."%' ";
 }else{
 	$inputdatamatch="";
 	$filterdatamatch=$inputdatamatch;
@@ -127,7 +127,7 @@ if(isset($_GET['datamatch']) && strlen($_GET['datamatch'])>0){
 if(isset($_GET['dataexclude']) && strlen($_GET['dataexclude'])>0){
 	$inputdataexclude=$_GET['dataexclude'];
 	$filterdataexclude=$inputdataexclude;
-	$where.="AND data.full_log not like '%".quote_smart($inputdataexclude)."%' ";
+	$where.="AND alert.full_log not like '%".quote_smart($inputdataexclude)."%' ";
 }else{
 	$inputdataexclude="";
 	$filterdataexclude=$inputdataexclude;
@@ -173,12 +173,11 @@ if(isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit']<1000){
 
 
 
-	$querytable="SELECT alert.id as id, alert.rule_id as rule, signature.level as lvl, alert.timestamp as timestamp, location.name as loc, data.full_log as data, alert.src_ip as src_ip
-		FROM alert, location, signature, data
+	$querytable="SELECT alert.id as id, alert.rule_id as rule, signature.level as lvl, alert.timestamp as timestamp, location.name as loc, alert.full_log as data, alert.src_ip as src_ip
+		FROM alert, location, signature
 		WHERE 1=1
 		and alert.location_id=location.id
 		and alert.rule_id=signature.rule_id
-		and alert.id=data.id
 		".$where."
 		ORDER BY alert.timestamp DESC";
 	$resulttable=mysql_query($querytable, $db_ossec);

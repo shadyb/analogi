@@ -53,7 +53,7 @@ $firstinstance = $row['first'];
 $query="SELECT distinct(substring_index(substring_index(location.name, ' ', 1), '->', 1)) as loc_name
 	FROM alert
 	LEFT JOIN location ON alert.location_id = location.id
-	WHERE alert.id IN (select data.id from data where full_log like '%".$ip."%');";
+	WHERE alert.id IN (select alert.id from alert where full_log like '%".$ip."%');";
 if($glb_debug==1){
 	$seenat="<div style='font-size:24px; color:red;font-family: Helvetica,Arial,sans-serif;'>Debug</div>"; 
 	$seenat.=$query;

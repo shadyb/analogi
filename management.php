@@ -35,7 +35,7 @@ if(isset($_GET['action']) && $_GET['action']=='delete' && preg_match("/\/managem
 	}
 	# delete data
 	if(isset($_GET['datamatch']) && strlen($_GET['datamatch'])>0){
-		$where.="data.full_log like \"%".$_GET['datamatch']."%\" AND ";
+		$where.="alert.full_log like \"%".$_GET['datamatch']."%\" AND ";
 	}
 	
 	$query="";
@@ -45,8 +45,7 @@ if(isset($_GET['action']) && $_GET['action']=='delete' && preg_match("/\/managem
 		# remove the last 'AND '
 		$where=substr($where,0,-4);
 
-		$querydelete="DELETE alert, data FROM alert
-			LEFT JOIN data ON alert.id=data.id
+		$querydelete="DELETE alert FROM alert
 			LEFT JOIN signature ON alert.rule_id=signature.rule_id
 			LEFT JOIN location ON alert.location_id=location.id
 			WHERE ".$where;
@@ -54,8 +53,6 @@ if(isset($_GET['action']) && $_GET['action']=='delete' && preg_match("/\/managem
 		if($resultdelete==1){
 			# MySQL version of vaccum... this actually removes the data
 			$query="OPTIMIZE TABLE alert;";
-			mysql_query($query, $db_ossec);
-			$query="OPTIMIZE TABLE data;";
 			mysql_query($query, $db_ossec);
 		}
 	
@@ -73,8 +70,7 @@ if(isset($_GET['action']) && $_GET['action']=='removelocation' && isset($_GET['s
 	# Yes I know the referer is fakable, but this is to help reduce CSRF attacks from remote links, and not to prevent malicious browsers
 
 	# Delete data
-	$querydelete="DELETE alert, data FROM alert
-		LEFT JOIN data ON alert.id=data.id
+	$querydelete="DELETE alert FROM alert
 		LEFT JOIN signature ON alert.rule_id=signature.rule_id
 		LEFT JOIN location ON alert.location_id=location.id
 		WHERE location.name like \"".$_GET['source']."%\"";
@@ -87,8 +83,6 @@ if(isset($_GET['action']) && $_GET['action']=='removelocation' && isset($_GET['s
 	}
 	# MySQL version of vaccum... this actually removes the data
 	$query="OPTIMIZE TABLE alert;";
-	mysql_query($query, $db_ossec);
-	$query="OPTIMIZE TABLE data;";
 	mysql_query($query, $db_ossec);
 
 	# Delete location
