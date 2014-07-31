@@ -17,13 +17,13 @@ if(strlen($wherecategory)>5){
 	$wherecategory_tables="";
 }
 
-$query="SELECT count(alert.id) as res_cnt, alert.rule_id as res_id, alert.rule_id as res_rule
+$query="SELECT count(alert.id) as res_cnt, alert.rule_id as res_id
 	FROM alert ".$wherecategory_tables."
 	WHERE alert.timestamp>'".(time()-($inputhours*60*60))."' 
 	AND alert.level>=".$inputlevel."
 	".$glb_notrepresentedwhitelist_sql." 
 	".$wherecategory." 
-	GROUP BY res_id, res_desc, res_rule  
+	GROUP BY res_id
 	ORDER BY count(alert.id) DESC
 	LIMIT ".$glb_indexsubtablelimit; 
 
